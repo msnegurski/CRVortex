@@ -4,9 +4,6 @@
 #include <FFT_functions.h>
 
 
-
-
-
 double gradx_sq(double **Rdat, double **Idat, int i, int j, double dx)
 {
 	return ((Rdat[i][j]-Rdat[i][j-1])*(Rdat[i][j]-Rdat[i][j-1])+(Idat[i][j]-Idat[i][j-1])*(Idat[i][j]-Idat[i][j-1]))/(dx*dx);
@@ -21,7 +18,8 @@ double psi_sq(double **Rdat, double **Idat, int i, int j)
 {
 	return (Rdat[i][j]*Rdat[i][j]+Idat[i][j]*Idat[i][j]);
 }
-//Возвращает полную мощность луча
+
+//Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅСѓСЋ РјРѕС‰РЅРѕСЃС‚СЊ Р»СѓС‡Р°
 double power(double **Rdat, double **Idat, int N, double dx)
 {
 	double p=0.0;
@@ -33,9 +31,9 @@ double power(double **Rdat, double **Idat, int N, double dx)
 			p+=Idat[i][j]*Idat[i][j]*dx*dx;
 		}
 	return p;
-}  
+}
 
-//Возвращает полную энергию луча
+//Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅСѓСЋ СЌРЅРµСЂРіРёСЋ Р»СѓС‡Р°
 double energy(double **Rdat, double **Idat, int N, double dx)
 {
 	double e=0.0;
@@ -48,10 +46,7 @@ double energy(double **Rdat, double **Idat, int N, double dx)
 			//e+=psi_sq(Rdat,Idat,i,j)*psi_sq(Rdat,Idat,i,j)*dx*dx;
 		}
 
-
-
 	e*=dx*dx;
-
 	return e;
 }
 
@@ -62,11 +57,9 @@ void initiate(double **Rdat, double **Idat, int N,double dx,double ampl)
 	for (i=0; i<N; i++)
 		for (j=0; j<N; j++)
 		{
-			
-			Rdat[i][j]=ampl*exp(-((i-N/2)*(i-N/2)+(j-N/2)*(j-N/2))*dx*dx/2);   //Начальные условия - гауссоида
-			Idat[i][j]=0.0;
 
-			
+			Rdat[i][j]=ampl*exp(-((i-N/2)*(i-N/2)+(j-N/2)*(j-N/2))*dx*dx/2);   //РќР°С‡Р°Р»СЊРЅС‹Рµ СѓСЃР»РѕРІРёСЏ - РіР°СѓСЃСЃРѕРёРґР°
+			Idat[i][j]=0.0;
 
 			/*
 			RePsi[i][j]=sin((i+j)*dx);
@@ -74,10 +67,9 @@ void initiate(double **Rdat, double **Idat, int N,double dx,double ampl)
 
 			*/
 		}
-
 }
 
-//шаг эволюции системы во времени, зависящий от нелинейности (кубической)
+//С€Р°Рі СЌРІРѕР»СЋС†РёРё СЃРёСЃС‚РµРјС‹ РІРѕ РІСЂРµРјРµРЅРё, Р·Р°РІРёСЃСЏС‰РёР№ РѕС‚ РЅРµР»РёРЅРµР№РЅРѕСЃС‚Рё (РєСѓР±РёС‡РµСЃРєРѕР№)
 void cubic_evol(double **Rdat, double **Idat, int N, double dt)
 {
 	int i,j;
@@ -92,13 +84,9 @@ void cubic_evol(double **Rdat, double **Idat, int N, double dt)
 			Rdat[i][j]=buf1*cos(buf3)-buf2*sin(buf3);
 			Idat[i][j]=buf1*sin(buf3)+buf2*cos(buf3);
 		}
-
-
-
-
 }
 
-//шаг эволюции системы во времени, зависящий от линейного члена
+//С€Р°Рі СЌРІРѕР»СЋС†РёРё СЃРёСЃС‚РµРјС‹ РІРѕ РІСЂРµРјРµРЅРё, Р·Р°РІРёСЃСЏС‰РёР№ РѕС‚ Р»РёРЅРµР№РЅРѕРіРѕ С‡Р»РµРЅР°
 void linear_evol(double **Rdat, double **Idat, int N, int LogN, double dt, double dx)
 {
 
@@ -110,14 +98,14 @@ void linear_evol(double **Rdat, double **Idat, int N, int LogN, double dt, doubl
 
 	double buf1,buf2,buf3;
 
-	
+
 	FFT2D(Rdat, Idat, N, LogN, -1);
 
 
 	for (i=0; i<N; i++)
 		for (j=0; j<N; j++)
 		{
-			
+
 			if (i<N/2)
 				kx=i;
 			else
@@ -128,26 +116,23 @@ void linear_evol(double **Rdat, double **Idat, int N, int LogN, double dt, doubl
 			else
 				ky=(N-j);
 
-			
+
 			buf1=-(kx*kx+ky*ky)*t*dt;
 			buf2=Rdat[i][j];
 			buf3=Idat[i][j];
 
 			Rdat[i][j]=buf2*cos(buf1)-buf3*sin(buf1);
-			Idat[i][j]=buf2*sin(buf1)+buf3*cos(buf1);	
+			Idat[i][j]=buf2*sin(buf1)+buf3*cos(buf1);
 		}
 
 	FFT2D(Rdat, Idat, N, LogN, 1);
-
 }
 
 
 void total_evol(double **Rdat, double **Idat, int N, int LogN, double dt, double dx,int num_step)
 {
 	int i;
-	
 	linear_evol(Rdat,Idat,N,LogN,dt/2,dx);
-	
 
 	for (i=0; i<num_step-1; i++)
 	{
@@ -158,15 +143,11 @@ void total_evol(double **Rdat, double **Idat, int N, int LogN, double dt, double
 
 	cubic_evol(Rdat,Idat,N,dt);
 	linear_evol(Rdat,Idat,N,LogN,dt/2,dx);
-
-
-
 }
 
 
 double evol_check(double **Rdat, double **Idat, int N, int LogN, double dt, double dx,double ampl,int steps)
 {
-	
 	double in_max , fin_max;
 
 	in_max=sqrt(psi_sq(Rdat,Idat,N/2,N/2));
@@ -184,13 +165,11 @@ double evol_check(double **Rdat, double **Idat, int N, int LogN, double dt, doub
 	{
 		return 2;
 	}
-	
+
 	if(in_max==fin_max)
 	{
 		return 3;*/
 	return (in_max/fin_max);
-
-
 }
 
 double average_width(double **Rdat, double **Idat, int N, double dx)
@@ -206,10 +185,8 @@ double average_width(double **Rdat, double **Idat, int N, double dx)
 	}
 
 	s=s/p;
-
 	return s;
 }
-
 
 void find_stat(double **Rdat, double **Idat, int N, int LogN, double dt, double dx, double ampl_min, double ampl_max, int step,int evol_step)
 {
@@ -219,16 +196,11 @@ void find_stat(double **Rdat, double **Idat, int N, int LogN, double dt, double 
 		initiate(Rdat,Idat,N,dx,ampl);
 		printf("%f %f %f\n", ampl, power(Rdat,Idat,N,dx), evol_check(Rdat,Idat,N,LogN,dt,dx,ampl,evol_step));
 	}
-
 }
-
-
-
-
 
 int main()
 {
-	
+
 	int i;
 	int deg=8;
 	int cnum=1;
@@ -260,13 +232,13 @@ int main()
 	}
 
 	//----------------------------------------------------------------------------------------
-	
+
 	/*
 	initiate(RePsi,ImPsi,cnum,dx,ampl);
 
 	for (i=0;i<cnum;i++)
 		fprintf(start,"%d %f\n",i,psi_sq(RePsi,ImPsi,cnum/2,i));
-	
+
 	printf("%f\n",evol_check(RePsi,ImPsi,cnum,deg,dt,dx,ampl,n));
 
 	for (i=0;i<cnum;i++)
@@ -276,7 +248,7 @@ int main()
 	//find_stat(RePsi,ImPsi,cnum,deg,dt,dx,1,11,10,n);
 
 	initiate(RePsi,ImPsi,cnum,dx,ampl);
-	
+
 	for (i=0;i<cnum;i++)
 		fprintf(start,"%d %f\n",i,sqrt(psi_sq(RePsi,ImPsi,cnum/2,i)));
 
@@ -290,17 +262,12 @@ int main()
 		total_evol(RePsi,ImPsi,cnum,deg,dt,dx,n);
 		printf("%f %.8f %f %f\n",(i+1)*n*dt,average_width(RePsi,ImPsi,cnum,dx),energy(RePsi,ImPsi,cnum,dx),power(RePsi,ImPsi,cnum,dx));
 	}
-	
+
 
 	for (i=0;i<cnum;i++)
 		fprintf(final,"%d %f\n",i,sqrt(psi_sq(RePsi,ImPsi,cnum/2,i)));
-	
 
 
-
-
-
-	
 	//----------------------------------------------------------------------------------------
 	fclose(start);
 	fclose(final);
@@ -313,9 +280,8 @@ int main()
 
 	delete(RePsi);
 	delete(ImPsi);
-	
+
 	system("PAUSE");
 	return 0;
-
 }
 
