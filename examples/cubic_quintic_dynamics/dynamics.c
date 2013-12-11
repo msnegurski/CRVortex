@@ -1,8 +1,8 @@
+#include "fft_functions.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <FFT_functions.h>
-
 
 double double_abs(double x)
 {
@@ -71,7 +71,7 @@ double power(double **Rdat, double **Idat, int N, double dx)
             p+=Idat[i][j]*Idat[i][j]*dx*dx;
         }
     return p;
-}  
+}
 
 
 double energy(double **Rdat, double **Idat, int N, double dx)
@@ -91,7 +91,7 @@ void find_stat(double **Rdat, double **Idat, int cnum, double dx, double size)
 {
     const int n=10*cnum;
 
-    int i,j,k;
+    int i, j;
 
     double delta=size/n/2;
     double lambda=0.85;
@@ -101,24 +101,22 @@ void find_stat(double **Rdat, double **Idat, int cnum, double dx, double size)
 
     double a[n],b[n],c[n],diag[n];
 
-    double v1[n], v2[n];
-
     double Nn=0.0,Np=0.0;
 
     double d[n], psi[n],psip[n];
-    double S;
+    double S = 0.0;
 
     int fl=0;
 
     for (i=0; i<n; i++)
-    {    
+    {
         psi[i]=pow(2.71, -i*delta*(i*delta));
     }
 
     for (i=0; i<n; i++)
     {
         a[i]=-1.0/(delta*delta)+1.0/(2.0*i*delta*delta);
-        c[i]=lambda+2/(delta*delta);//+m*m/(i*i*delta*delta);
+        c[i]=lambda+2/(delta*delta);
         b[i]=-1.0/(delta*delta)-1.0/(2.0*i*delta*delta);
     }
 
@@ -137,7 +135,7 @@ void find_stat(double **Rdat, double **Idat, int cnum, double dx, double size)
 
 
         for (i=0; i<n; i++)
-        {    
+        {
             diag[i]=c[i];
 
             d[i]=-psi[i]*psi[i]*psi[i]+psi[i]*psi[i]*psi[i]*psi[i]*psi[i];
@@ -201,12 +199,12 @@ void find_stat(double **Rdat, double **Idat, int cnum, double dx, double size)
 
             r=int_double(buf);
 
-            if ((i==cnum/2) and (j==cnum/2))
+            if ((i==cnum/2) && (j==cnum/2))
                 printf("%d\n",r);
             if ((r*delta*2)>size)
                 Rdat[i][j]=0.0;
             else
-                Rdat[i][j]=psi[r]; 
+                Rdat[i][j]=psi[r];
         }
 
 
@@ -273,7 +271,7 @@ void linear_evol(double **Rdat, double **Idat, int N, int LogN, double dt, doubl
             buf3=Idat[i][j];
 
             Rdat[i][j]=buf2*cos(buf1)-buf3*sin(buf1);
-            Idat[i][j]=buf2*sin(buf1)+buf3*cos(buf1);	
+            Idat[i][j]=buf2*sin(buf1)+buf3*cos(buf1);
         }
 
     FFT2D(Rdat, Idat, N, LogN, -1);
@@ -326,30 +324,26 @@ double average_width(double **Rdat, double **Idat, int N, double dx)
 
 int main()
 {
-
     int i,j;
     int deg=10;
     int cnum=1;
     double **RePsi,**ImPsi;
     double size=20;
-    double ampl=10.0;
-    FILE *final, *start,*ham;
+
+    FILE *final, *start;
     double dt=0.0000001;
     int n=1;
-    FILE *x,*y,*z;
+    FILE *x;
 
     final=fopen("final.txt","w");
     start=fopen("start.txt","w");
-    ham=fopen("hamilton.txt","w");
-
 
     x=fopen("x.txt","w");
-    y=fopen("y.txt","w");
-    z=fopen("z.txt","w");
 
     for (i=0; i<deg; i++)
+	{
         cnum*=2;
-
+	}
     double dx=size/cnum;
 
     RePsi = (double **) malloc (cnum*sizeof(double *));
@@ -435,15 +429,12 @@ int main()
 
     for (i=0; i<cnum; i++)
     {
-        delete(RePsi[i]);
-        delete(ImPsi[i]);
+        free(RePsi[i]);
+        free(ImPsi[i]);
     }
 
-    delete(RePsi);
-    delete(ImPsi);
+    free(RePsi);
+    free(ImPsi);
 
-    system("PAUSE");
     return 0;
-
 }
-
