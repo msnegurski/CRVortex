@@ -3,16 +3,27 @@
 #include <math.h>
 
 
-double find_stat(int cnum, double size,double lambda)
+
+
+
+int main(void)
 {
-	const int n=10*cnum;
+    
+    const int n=5120;
+    
+    double dev;
+    
+    FILE *fp,*fd;
+    
+    fp=fopen("sequence.txt","w");
+    fd=fopen("dev.txt","w");
     
     int i,j,k;
     
-    double delta=size/n/2;
+    double delta=100.0/n;
+    double lambda=0.1;
     
-    //FILE *fp;
-    //fp=fopen("sequence.txt","w");
+    //double m=0.0;
     
     double a[n],b[n],c[n],diag[n];
     
@@ -42,14 +53,27 @@ double find_stat(int cnum, double size,double lambda)
     
     
     
-    while(((S-1)*(S-1))>0.000000001)
+    while(((S-1)*(S-1))>0.00000000001)
     {
     Np=0.0;
     Nn=0.0;
-
+    /*
+    for (i=0; i<n; i++)
+    printf("%lf \n",psi[i]);*/
+    
     
     fl++;
-
+    /*
+    for (i=0; i<n; i++)
+        {
+        a[i]=-1/(delta*delta)+i/2.0;
+        c[i]=lambda+2/(delta*delta);
+        b[i]=-1/(delta*delta)-i/2.0;
+        }*/
+    /*
+    a[0]=0.0;
+    b[0]=-2/(delta*delta);
+    b[n-1]=0.0;*/
     
     for (i=0; i<n; i++)
         {    
@@ -95,50 +119,33 @@ double find_stat(int cnum, double size,double lambda)
         
         }
         
-        //printf("%lf\n",S);
-        
-    }
-    //printf("%lf\n",psi[0]);
     
     
-    //for (i=0; i<n; i++)
-        //fprintf(fp,"%lf %lf\n", i*delta, psi[i]);
-        
-        
-    
-    double power=0.0;
-    
-    for (i=0;i<n;i++)
-        power+=psi[i]*psi[i]*i*delta*delta;
+    printf("\n%lf\n",S);
+    //system("PAUSE");
     
     
-    return 2*M_PI*power;
-}
-
-int main()
-{
-    int i;
-    double j;
-    FILE *fp;
-    fp=fopen("power(lambda).txt","w");
-    printf("%lf\n",find_stat(2000,30,1));
-    for (i=0;i<14;i++)
-    {
-        j=i*0.01;
-        fprintf(fp,"%lf %lf\n",j,sqrt(find_stat(500,20,j)*find_stat(500,20,j)));
-        printf("%lf\n",j);
-        
-    }
-    for (i=44;i<100;i++)
-    {
-        j=i*0.01;
-        fprintf(fp,"%lf %lf\n",j,sqrt(find_stat(500,20,j)*find_stat(500,20,j)));
-        printf("%lf\n",j);
-        
+    
     }
     
+    Nn=2*3.1415*Nn;
+    printf("\n%lf\n",Nn);
+    //printf("%d\n",fl);
     
+    for (i=0; i<n; i++)
+        fprintf(fp, "%lf %lf\n", (i*delta), psi[i]);
+    
+    for (i=1; i<n-1; i++)
+    {  
+       dev=a[i]*psi[i-1]+c[i]*psi[i]+b[i]*psi[i+1]+psi[i]*psi[i]*psi[i]-psi[i]*psi[i]*psi[i]*psi[i]*psi[i];
+       fprintf(fd,"%lf %lf\n", i*delta, dev);
+    }
+        
+        
+    fclose(fp);
     
     system("PAUSE");
-    return 0;    
+    return 0;
 }
+    
+    
