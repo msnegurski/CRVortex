@@ -94,7 +94,7 @@ void find_stat(double **Rdat, double **Idat, int cnum, double dx, double size)
     int i, j;
 
     double delta=size/n/2;
-    double lambda=0.85;
+    double lambda=0.1;
 
     FILE *fp;
     fp=fopen("sequence.txt","w");
@@ -325,13 +325,13 @@ double average_width(double **Rdat, double **Idat, int N, double dx)
 int main()
 {
     int i,j;
-    int deg=10;
+    int deg=8;
     int cnum=1;
     double **RePsi,**ImPsi;
-    double size=20;
+    double size=60;
 
     FILE *final, *start;
-    double dt=0.0000001;
+    double dt=0.000000001;
     int n=1;
     FILE *x;
 
