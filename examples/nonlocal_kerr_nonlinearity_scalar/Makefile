@@ -3,11 +3,11 @@ FLAGS=-Wall -Ofast -fomit-frame-pointer -msse -msse2 -msse3 -mmmx -m3dnow
 INCLUDE=-I../../include
 LINK=-L../../lib -lfft
 
-all: dynamics
+all: nonlocal_scalar
 
-dynamics: dynamics.c
+nonlocal_scalar: nonlocal_scalar.c
 	$(CC)  $^ -o $@ $(FLAGS) $(INCLUDE) $(LINK)
 
 clean:
 	rm -f *.txt
-	rm -f dynamics
+	rm -f nonlocal_scalar

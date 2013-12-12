@@ -3,11 +3,15 @@ FLAGS=-Wall -Ofast -fomit-frame-pointer -msse -msse2 -msse3 -mmmx -m3dnow
 INCLUDE=-I../../include
 LINK=-L../../lib -lfft
 
-all: dynamics
+all: Mdef M0
 
-dynamics: dynamics.c
+Mdef: Mdef.c
+	$(CC)  $^ -o $@ $(FLAGS) $(INCLUDE) $(LINK)
+
+M0: M0.c
 	$(CC)  $^ -o $@ $(FLAGS) $(INCLUDE) $(LINK)
 
 clean:
 	rm -f *.txt
-	rm -f dynamics
+	rm -f M0 Mdef
+

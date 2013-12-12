@@ -3,11 +3,11 @@ FLAGS=-Wall -Ofast -fomit-frame-pointer -msse -msse2 -msse3 -mmmx -m3dnow
 INCLUDE=-I../../include
 LINK=-L../../lib -lfft
 
-all: dynamics
+all: soliton
 
-dynamics: dynamics.c
+soliton: soliton.c
 	$(CC)  $^ -o $@ $(FLAGS) $(INCLUDE) $(LINK)
 
 clean:
 	rm -f *.txt
-	rm -f dynamics
+	rm -f soliton
