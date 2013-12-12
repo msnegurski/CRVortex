@@ -6,7 +6,7 @@ LINK=-L../../lib -lfft
 all: dynamics
 
 dynamics: dynamics.c
-	$(CC) $(FLAGS) $(INCLUDE) $(LINK) $^ -o $@
+	$(CC)  $^ -o $@ $(FLAGS) $(INCLUDE) $(LINK)
 
 clean:
 	rm -f *.txt

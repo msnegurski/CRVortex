@@ -6,7 +6,7 @@
 #define  FT_DIRECT        -1    // Direct transform.
 #define  FT_INVERSE        1    // Inverse transform.
 
-#define pt 11
+#define pt 12
  
 bool  FFT(float *Rdat, float *Idat, int N, int LogN, int Ft_Flag);
 
@@ -26,7 +26,7 @@ int main()
   
   
   float dx=20.0/ptt;
-  /*
+  
   for(i=ptt/2; i<ptt; i++)
   {
     Re[i] = pow(e,-((i-ptt/2)*dx)*((i-ptt/2)*dx));
@@ -36,27 +36,27 @@ int main()
   {
     Re[i] = pow(e,-((i-ptt/2)*dx)*((i-ptt/2)*dx));
     Im[i] = 0;          
-  }*/
-  
+  }
+  /*
   for(i=0; i<ptt; i++)
   {
            Re[i]=sin(i*dx);
            Im[i]=0;
   }
-  
+  */
   
   FILE *fo=fopen("origin.txt","w");
   FILE *f=fopen("spectrum.txt", "w");
   FILE *fp=fopen("temp.txt","w");
-  /*
+  
   for(i=0; i<ptt; i++)
   {
     
     
-    fprintf(fo, "%10.6f  %10.6f\n", i*dx, ((4*(i-ptt/2)*(i-ptt/2)*dx*dx-2)*Re[i]));
+    fprintf(fo, "%10.6f  %10.6f\n", i*dx, (2*(i-ptt/2)*dx*Re[i]));
    
   }
-  */
+  
   
   
   FFT(Re, Im, ptt, pt, -1);
@@ -64,24 +64,26 @@ int main()
   float t;
   
   
-  
+  double buf;
   for(i=0; i<ptt; i++)
   {
     fprintf(fp, "%10.6f  %10.6f\n", Re[i], Im[i]);
   }
   
   
-  t=p*p/dx/dx;
+  t=p/dx;
   
   for(i=0; i<ptt/2; i++)
   {
-           Re[i]*=(-t*i*i);
-           Im[i]*=(-t*i*i);
+           buf=Re[i];
+           Re[i]*=-t*t*i*i;
+           Im[i]*=-t*t*i*i;
   }
   for(i=ptt; i>=(ptt/2); i--)
   {
-           Re[i]*=(-t*(ptt-i)*(ptt-i));
-           Im[i]*=(-t*(ptt-i)*(ptt-i));
+           buf=Re[i];
+           Re[i]*=-t*(ptt-i)*t*(ptt-i);
+           Im[i]*=-t*(ptt-i)*t*(ptt-i);
   }
   
   FFT(Re, Im, ptt, pt, 1);
