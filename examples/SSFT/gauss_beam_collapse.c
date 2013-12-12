@@ -37,7 +37,7 @@ double power(double **Rdat, double **Idat, int N, double dx)
     return p;
 }
 
-// Возвращает полную енергию луча
+// Возвращает полную энергию луча
 double energy(double **Rdat, double **Idat, int N, double dx)
 {
     double e = 0.0;
