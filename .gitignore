@@ -18,6 +18,6 @@
 *.user
 *.ipch
 *.opj
-dynamics
 *.o
 *.a
+.gitignore
