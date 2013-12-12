@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS=-Wall -O3 -ffast-math
+FLAGS=-Wall -Ofast -fomit-frame-pointer -msse -msse2 -msse3 -mmmx -m3dnow
 INCLUDE=-I../../include
 LINK=-L../../lib -lfft
 
