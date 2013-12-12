@@ -17,3 +17,4 @@ powers: powers.c
 clean:
 	rm -f *.txt
 	rm -f M0 Mdef powers
+
